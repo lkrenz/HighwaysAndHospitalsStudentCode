@@ -41,6 +41,27 @@ public class HighwaysAndHospitals {
          * to a hospital. To do this, I could add a boolean value to to each node that says whether it is connected to a
          * hospital. If I can't connect a space to a space that is connected to a hospital, I would backup until I could
          */
+
+        int num_cities = 0;
+        int highest = 0;
+
+        for (int[] city : cities) {
+            if (city[0] > highest) {
+                highest = city[0];
+            }
+            if (city[1] > highest) {
+                highest = city[1];
+            }
+        }
+        int[] connections = new int[highest];
+        connections[0] = Integer.MAX_VALUE;
+        for (int[] city : cities) {
+            connections[city[0]]++;
+            connections[city[1]]++;
+        }
+
+
+
         return 0;
     }
 }
