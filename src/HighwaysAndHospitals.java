@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Highways & Hospitals
  * A puzzle created by Zach Blick
@@ -15,53 +19,56 @@ public class HighwaysAndHospitals {
      *  hospital access for all citizens in Menlo County.
      */
     public static long cost(int n, int hospitalCost, int highwayCost, int cities[][]) {
-
-
-        /**
-         * Need to find a way to separate each individual network of connectable cities.
-         * Potentially run a search algorithm on each point in the graph and see if it can reach each other point.
-         * If theres a point the graph can't reach, add every point it can to its graph.
-         * Once I have the graphs set up based off of which ones can be connected, place a hospital on every node
-         * and calculate the total price. From there, start removing hospitals starting with the node with the
-         * least number of connections and add highways to connect that node to the nearest hospital with the highest
-         * number of hospitals nearby. If that reduces the price, keep this case and move on. Once the price increases,
-         * back off of this path.
-         */
-
-        /**
-         * To separate the graph between the different colonies, pick a random point, (probably go through the array
-         * based off of how many connections each point has), and find every point it can reach through breadth first
-         * search.
-         */
-
-        /**
-         * Once you have the arrays of each colony created, you can run the cycle outlined in the section above on each
-         * individual colony to save on running efficiency. The method could be made more effecient if, instead of
-         * creating the map of individual colonies, I just keep removing hospitals until the space cannot be connected
-         * to a hospital. To do this, I could add a boolean value to to each node that says whether it is connected to a
-         * hospital. If I can't connect a space to a space that is connected to a hospital, I would backup until I could
-         */
-
-        int num_cities = 0;
-        int highest = 0;
-
-        for (int[] city : cities) {
-            if (city[0] > highest) {
-                highest = city[0];
-            }
-            if (city[1] > highest) {
-                highest = city[1];
-            }
+        if (hospitalCost < highwayCost) {
+            return ((long) hospitalCost) * n;
         }
-        int[] connections = new int[highest];
-        connections[0] = Integer.MAX_VALUE;
-        for (int[] city : cities) {
-            connections[city[0]]++;
-            connections[city[1]]++;
+        ArrayList<Integer>[] connections = new ArrayList[n];
+
+        for (int i = 0; i < cities.length; i++) {
+            connections[i] = new ArrayList<>();
+            connections[cities[i][0]].add(cities[i][1]);
+            connections[cities[1][1]].add(cities[i][0]);
         }
 
+        int numVisited = 0;
 
+        boolean[] visited = new boolean[n];
 
-        return 0;
+        ArrayList<Integer> clusters = new ArrayList<>();
+
+        Queue<Integer> toVisit = new LinkedList<>();
+
+        int numCluster = 0;
+        while (numVisited != n) {
+            int location = 0;
+            clusters.add(0);
+            while ((visited[location])) {
+                location++;
+            }
+            toVisit.add(location);
+
+            while (!toVisit.isEmpty()) {
+                location = toVisit.poll();
+                numVisited++;
+                for (int i = 0; i < connections[location].size(); i++) {
+                    if (visited[connections[location].get(i)]) {
+                        continue;
+                    }
+                    toVisit.add(connections[location].get(i));
+                    visited[connections[location].get(i)] = true;
+                    clusters.set(numCluster, clusters.get(numCluster) + 1);
+                }
+            }
+            numCluster++;
+        }
+
+        long price = 0;
+
+        for (int i = 0; i < clusters.size(); i++) {
+            price += hospitalCost + (clusters.get(i) - 1) * highwayCost;
+        }
+
+        return price;
+
     }
 }
