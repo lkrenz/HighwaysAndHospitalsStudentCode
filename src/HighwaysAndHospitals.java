@@ -20,57 +20,30 @@ public class HighwaysAndHospitals {
      *  hospital access for all citizens in Menlo County.
      */
     public static long cost(int n, int hospitalCost, int highwayCost, int cities[][]) {
-        if (hospitalCost < highwayCost) {
-            return ((long) hospitalCost) * n;
-        }
-        ArrayList<Integer>[] connections = new ArrayList[n + 1];
+        int[] roots = new int[n + 1];
 
-        for (int i=0; i< connections.length; i++) {
-            connections[i] = new ArrayList<>();
-        }
         for (int i = 0; i < cities.length; i++) {
-            connections[cities[i][0]].add(cities[i][1]);
-            connections[cities[i][1]].add(cities[i][0]);
-        }
-
-        int numVisited = 0;
-
-        boolean[] visited = new boolean[n + 1];
-
-        ArrayList<Integer> clusters = new ArrayList<>();
-
-        Queue<Integer> toVisit = new LinkedList<>();
-
-        int numCluster = 0;
-        while (numVisited <= n) {
-            int location = 1;
-            clusters.add(0);
-            while ((visited[location]) && location < n) {
-                location++;
+            // Set the root of the second city to the root of the first city
+            if (roots[cities[i][0]] == 0) {
+                roots[cities[i][1]] = cities[i][0];
+                System.out.println(Arrays.toString(roots));
             }
-            toVisit.add(location);
-            visited[location] = true;
-
-            while (!toVisit.isEmpty()) {
-                location = toVisit.poll();
-                numVisited++;
-                for (int i = 0; i < connections[location].size(); i++) {
-                    if (!visited[connections[location].get(i)]) {
-                        toVisit.add(connections[location].get(i));
-                        visited[connections[location].get(i)] = true;
-                        clusters.set(numCluster, clusters.get(numCluster) + 1);
-                    }
+            else {
+                int root = roots[cities[i][0]];
+                while (root != 0) {
+                    root = roots[root];
                 }
+                roots[cities[i][1]] = root;
+
             }
-            numCluster++;
         }
-
-        long price = 0;
-        for (int i = 0; i < clusters.size() - 1; i++) {
-            price += hospitalCost + ((clusters.get(i)) * highwayCost);
+        System.out.println(Arrays.toString(roots));
+        int count = -1;
+        for (int i = 0; i < n ; i++) {
+            if (roots[i] == 0) {
+                count++;
+            }
         }
-
-        return price;
-
+        return ((long)(count * hospitalCost)) + (highwayCost * (n - count));
     }
 }
