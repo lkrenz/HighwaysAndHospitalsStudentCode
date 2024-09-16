@@ -22,28 +22,37 @@ public class HighwaysAndHospitals {
     public static long cost(int n, int hospitalCost, int highwayCost, int cities[][]) {
         int[] roots = new int[n + 1];
 
+        if (hospitalCost <= highwayCost) {
+            return (long)n * hospitalCost;
+        }
+
         for (int i = 0; i < cities.length; i++) {
             // Set the root of the second city to the root of the first city
             if (roots[cities[i][0]] == 0) {
                 roots[cities[i][1]] = cities[i][0];
-                System.out.println(Arrays.toString(roots));
+                System.out.println(roots[0] + "  :  " + Arrays.toString(cities[i]));
             }
             else {
-                int root = roots[cities[i][0]];
-                while (root != 0) {
+                int root = roots[cities[i][1]];
+                while (roots[root] != 0) {
                     root = roots[root];
                 }
-                roots[cities[i][1]] = root;
+                // Root is the index of the right side's root
+                roots[root] = roots[cities[i][0]];
 
             }
         }
-        System.out.println(Arrays.toString(roots));
-        int count = -1;
-        for (int i = 0; i < n ; i++) {
+
+        int count = 0;
+        for (int i = 1; i < n + 1; i++) {
             if (roots[i] == 0) {
                 count++;
             }
         }
-        return ((long)(count * hospitalCost)) + (highwayCost * (n - count));
+
+        long price = ((long)count) * hospitalCost + (long)highwayCost * (n-count);
+        System.out.println(count);
+        System.out.println(price);
+        return price;
     }
 }
