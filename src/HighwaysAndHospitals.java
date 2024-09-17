@@ -27,32 +27,47 @@ public class HighwaysAndHospitals {
         }
 
         for (int i = 0; i < cities.length; i++) {
-            // Set the root of the second city to the root of the first city
-            if (roots[cities[i][0]] == 0) {
-                roots[cities[i][1]] = cities[i][0];
-                System.out.println(roots[0] + "  :  " + Arrays.toString(cities[i]));
+            int leftRoot = cities[i][0];
+            while (roots[leftRoot] > 0) {
+                leftRoot = roots[leftRoot];
             }
-            else {
-                int root = roots[cities[i][1]];
-                while (roots[root] != 0) {
-                    root = roots[root];
+            int current = cities[i][0];
+            while (current != leftRoot) {
+                int temp = current;
+                current = roots[current];
+                roots[temp] = leftRoot;
+            }
+            int rightRoot = cities[i][1];
+            while (roots[rightRoot] > 0) {
+                rightRoot = roots[rightRoot];
+            }
+            current = cities[i][1];
+            while (current != rightRoot) {
+                int temp = current;
+                current = roots[current];
+                roots[temp] = rightRoot;
+            }
+            if (rightRoot != leftRoot) {
+                if (roots[rightRoot] < roots[leftRoot]) {
+                    roots[rightRoot] += (roots[leftRoot] - 1);
+                    roots[leftRoot] = rightRoot;
                 }
-                // Root is the index of the right side's root
-                roots[root] = roots[cities[i][0]];
-
+                else {
+                    roots[leftRoot] += (roots[rightRoot] - 1);
+                    roots[rightRoot] = leftRoot;
+                }
             }
         }
 
+
         int count = 0;
-        for (int i = 1; i < n + 1; i++) {
-            if (roots[i] == 0) {
+        for (int i = 1; i < roots.length; i++) {
+            if (roots[i] < 0) {
                 count++;
             }
         }
 
         long price = ((long)count) * hospitalCost + (long)highwayCost * (n-count);
-        System.out.println(count);
-        System.out.println(price);
         return price;
     }
 }
