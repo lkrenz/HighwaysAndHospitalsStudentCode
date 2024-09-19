@@ -26,22 +26,24 @@ public class HighwaysAndHospitals {
             return (long)n * hospitalCost;
         }
 
-        for (int i = 0; i < cities.length; i++) {
-            int leftRoot = cities[i][0];
+        for (int[] city : cities) {
+            int leftRoot = city[0];
             while (roots[leftRoot] > 0) {
                 leftRoot = roots[leftRoot];
             }
-            int current = cities[i][0];
+            int current = city[0];
             while (current != leftRoot) {
                 int temp = current;
                 current = roots[current];
                 roots[temp] = leftRoot;
             }
-            int rightRoot = cities[i][1];
+
+            int rightRoot = city[1];
             while (roots[rightRoot] > 0) {
                 rightRoot = roots[rightRoot];
             }
-            current = cities[i][1];
+
+            current = city[1];
             while (current != rightRoot) {
                 int temp = current;
                 current = roots[current];
@@ -49,11 +51,11 @@ public class HighwaysAndHospitals {
             }
             if (rightRoot != leftRoot) {
                 if (roots[rightRoot] < roots[leftRoot]) {
-                    roots[rightRoot] += (roots[leftRoot] - 1);
+                    roots[rightRoot] = roots[rightRoot] + roots[leftRoot] - 1;
                     roots[leftRoot] = rightRoot;
                 }
                 else {
-                    roots[leftRoot] += (roots[rightRoot] - 1);
+                    roots[leftRoot] = roots[rightRoot] + roots[leftRoot] - 1;
                     roots[rightRoot] = leftRoot;
                 }
             }
@@ -62,7 +64,7 @@ public class HighwaysAndHospitals {
 
         int count = 0;
         for (int i = 1; i < roots.length; i++) {
-            if (roots[i] < 0) {
+            if (roots[i] <= 0) {
                 count++;
             }
         }
