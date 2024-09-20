@@ -26,7 +26,7 @@ public class HighwaysAndHospitals {
             fastFind(roots, connections);
         }
 
-        // Finds the number of disconected subgraphs
+        // Finds the number of disconnected subgraphs
         int count = 0;
         for (int i = 1; i < roots.length; i++) {
             if (roots[i] <= 0) {
